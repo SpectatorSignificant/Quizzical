@@ -234,6 +234,11 @@ app.post("/created", (req, res) => {
     // res.render("create2.ejs", {quizName, numberOfQuestions});
 })
 
-app.listen(3000, () => {
+
+let PORT = process.env.PORT;
+if (PORT == null || PORT == "") {
+  PORT = 3000;
+}
+app.listen(PORT, () => {
     console.log("Server started on PORT 3000");
 })
