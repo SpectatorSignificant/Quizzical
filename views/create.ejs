@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quizzical</title>
+    <link rel="stylesheet" href="styles/create.css">
+    <link rel="stylesheet" href="styles/search.css">
+</head>
+<body>
+    <div class="top-bar">
+        <a href="/"><img src="img/logo.svg" alt="Logo" id="logo"></a>
+        <div id="search-bar">
+            <input type="text" id="search-box" placeholder="Search users or quizzes">
+            <div id="suggestions-box">
+                <ul id="suggestions-list">
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="sidebar">
+        <ul class="list">
+
+            <a href="/create"><li>Create Quiz</li></a>
+            <a href=""><li>Friends</li></a>
+            <a href="/scores"><li>Past Quizzes</li></a>
+            <a href="/user?username=<%= username %>"><li>Profile</li></a>
+            <a href="/auth?state=logout"><li>Logout</li></a>
+
+        </ul>
+    </div>
+    
+    <div class="content">
+        <h1>Creating Quiz</h1>
+        <form id="quiz-form" action="/create" method="post">
+            <div id="inputs">
+                <h2 class="quiz-name">Title of the Quiz: <input type="text" name="quizname" required autofocus></h2>
+                <div><h2>Number of questions:</h2> 
+                    <!-- <form id="number-form" action="/buffer" method="post"> -->
+                        <input class="number-of-questions" type="radio" name="numberofquestions" value="10" required>10</input>
+                        <input class="number-of-questions" type="radio" name="numberofquestions" value="15">15</input>
+                        <input class="number-of-questions" type="radio" name="numberofquestions" value="20">20</input>
+                    
+                    <!-- </form> -->
+                </div>
+            </div>
+    
+            <button type="submit">Create Quiz</button>
+        </form>
+    </div>
+    
+    <script>
+        let usersName = '<%= usersName %>';
+        let username = '<%= username %>';
+        let numberOfQuestions = '<%= numberOfQuestions %>';
+        let quizzes = '<%- JSON.stringify(quizzes) %>';
+        let quizzesInfo = '<%- JSON.stringify(quizzesInfo) %>';
+        let usersInfo = '<%- JSON.stringify(usersInfo) %>';
+    </script>
+    <script src="scripts/create.js"></script>
+    <script src="scripts/search.js"></script>
+</body>
+</html>

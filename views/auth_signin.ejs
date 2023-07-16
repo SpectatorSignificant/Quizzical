@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quizzical</title>
+    <link rel="stylesheet" href="styles/auth.css">
+</head>
+<body>
+    <div id="wrapper">
+        <img src="img/logo.svg" alt="logo">
+        <div id="inputs-box">
+            <form action="/auth" method="post">
+                <h2>Username: <input type="text" name="username" placeholder="Username" autofocus></h2>
+                <h2>Password: <input type="password" name="password" placeholder="Password"></h2>
+                <button type="submit">Sign in</button>
+                
+            </form>
+            <form action="/auth" method="post">
+                <p>Not registered? Sign up now</p>
+                <button type="submit">Sign up</button>
+            </form>
+        </div>
+        
+    </div>
+
+    <script id="logo" src="scripts/auth.js"></script>
+</body>
+</html>

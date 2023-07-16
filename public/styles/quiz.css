@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+
+*{
+    font-family: "Inter", "sans-serif";
+}
+
+body{
+    background-color: rgb(236, 236, 236);
+}
+
+.top-bar {
+    background-color: black;
+    color: #fff;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+}
+
+#logo {
+    width: 150px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.search-bar {
+    background-color: black;
+    display: flex;
+    position: absolute;
+    left: 35%;
+    border: none;
+    border-radius: 4px;
+    height: 40px;
+    padding: 0;
+    font-size: 14px;
+    margin-left: auto;
+}
+
+.search-box{
+    position: relative;
+    background-color: white;
+    width: 300px;
+    height: 25px;
+}
+#search-icon{
+    position: relative;
+    margin: 3px 0 3px 0;
+    width: 30px;
+    height: 30px;
+    
+}
+
+.sidebar {
+    background-color: #b6aeb9;
+    margin-top: 60px;
+    width: 150px;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    
+}
+
+.content {
+    margin-left: 220px;
+    margin-top: 60px;
+    padding: 20px;
+}
+
+.quiz-name{
+    border: solid 2px black;
+    border-radius: 12px;
+    padding: 7px 12px 7px 12px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+#display-box{
+    /* display: grid; */
+    position: relative;
+    top: 20px;
+    width: auto;
+    height: 300px;
+}
+
+.question{
+    border: solid 1px black;
+    border-radius: 5px;
+    margin: 30px;
+    padding: 10px;
+}
+
+.submit-quiz{
+    position: relative;
+    margin: 40px;
+    width: 150px;
+    height: 60px;
+    font-size: medium;
+    border: solid 3px black;
+    border-radius: 5px;
+    cursor: pointer;
+    /* background-color: #fff; */
+}
+
+.submit-quiz:hover{
+    background-color: #b6aeb9;
+}
+
+.list{
+    position: relative;
+    top: 50%;
+    right: 20px;
+
+
+}
+
+.list li{
+    display: block;
+    position: relative;
+    max-width: 100px;
+    margin: 0 0 15px 0;
+    padding: 0 2px 0 2px;
+    list-style-type:none;
+    text-align: center;
+    border: solid 1px black;
+    border-radius: 5px;
+
+}
+
+.list li:hover{
+    background-color: #88808b;
+}
+
+a{
+    color: black;
+    text-decoration: none;
+}
