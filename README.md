@@ -2,13 +2,13 @@
   
     
 
-## To run the project, use commands `npm install`, `node app.js`  
+## To run the project, use commands `npm install`, `node .\app.js`  
 
 ## Open `localhost:3000` on your browser to visit the site  
   
   
     
-    
+
 ### Before you run this project, please add a `.env` file to the project directory containing:
 ```
 MYSQL_HOST=
