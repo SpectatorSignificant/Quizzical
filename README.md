@@ -1,9 +1,14 @@
 # Quizzical - A Quiz Site
+  
+    
 
 ## To run the project, use commands `npm install`, `node app.js`  
 
 ## Open `localhost:3000` on your browser to visit the site  
-
+  
+  
+    
+    
 ### Before you run this project, please add a `.env` file to the project directory containing:
 ```
 MYSQL_HOST=
@@ -11,6 +16,8 @@ MYSQL_USER=
 MYSQL_PASSWORD=
 MYSQL_DATABASE=
 ```
+The `env.txt` file contains the template, simply fill in the values and rename the file to `.env`. That should work.  
+  
 
 ### If you are running this project for the first time,  
 

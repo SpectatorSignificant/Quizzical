@@ -2,7 +2,6 @@ const express = require("express");
 const ejs = require("ejs");
 const https = require("https");
 const bodyParser = require("body-parser");
-const { error } = require("console");
 const app = express();
 const {runQuery} = require(__dirname + "/database.js");
 const {encryptAndStore, decryptAndCompare} = require(__dirname + "/auth.js");
@@ -234,11 +233,11 @@ app.post("/created", (req, res) => {
     // res.render("create2.ejs", {quizName, numberOfQuestions});
 })
 
+// let PORT = process.env.PORT;
+// if (PORT == null || PORT == "") {
+//   PORT = 3000;
+// }
 
-let PORT = process.env.PORT;
-if (PORT == null || PORT == "") {
-  PORT = 3000;
-}
-app.listen(PORT, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("Server started on PORT 3000");
 })
