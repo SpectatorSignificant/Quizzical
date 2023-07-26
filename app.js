@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 const { createUser, createQuiz, updateUser, updateQuiz, findQuiz, findUser, displayQuizzes, searchUsers, searchQuizzes} = require(__dirname + "/mongoose.js");
-const {runQuery} = require(__dirname + "/database.js");
+// const {runQuery} = require(__dirname + "/database.js");
 const {encryptAndStore, decryptAndCompare} = require(__dirname + "/auth.js");
 
 app.use(bodyParser.urlencoded({extended: true}));

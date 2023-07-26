@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const {runQuery} = require(__dirname + "/database.js");
+// const {runQuery} = require(__dirname + "/database.js");
 const { createUser, createQuiz, updateUser, updateQuiz, findQuiz, findUser, displayQuizzes} = require(__dirname + "/mongoose.js");
 // app.use(express.json())
 // app.use(express.static("public"));
