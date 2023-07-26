@@ -9,7 +9,7 @@ usersInfo = JSON.parse(usersInfo);
 
 console.log(quizzesInfo, usersInfo);
 
-let infoArray = ["user1", "user2", "quiz1", "quiz2"]
+// let infoArray = ["user1", "user2", "quiz1", "quiz2"]
 let nameSuggestionsArray = [];
 let usernameSuggestionsArray = [];
 let quizSuggestionsArray = [];
@@ -30,7 +30,7 @@ usersInfo.forEach((element, index) => {
 })
 
 quizzesInfo.forEach((element, index) => {
-    quizzesInfoArray.push(element.quizname);
+    quizzesInfoArray.push(element.quizName);
 })
 console.log(quizzesInfo);
 // console.log(usersInfoObject);
@@ -83,10 +83,10 @@ searchInput.addEventListener("keyup", (e) => {
 
         quizSuggestionsArray.forEach((element) => {
             quizzesInfo.forEach((e, i) => {
-                if (e.quizname == element){
+                if (e.quizName == element){
                     console.log(e);
-                    html_search += `<li><a href="/quiz?quizCode=${e.quizcode}"><div>
-                    <h4>Quiz: ${e.quizname}</h4>
+                    html_search += `<li><a href="/quiz?quizCode=${e.quizCode}"><div>
+                    <h4>Quiz: ${e.quizName}</h4>
                     </div></a></li>`;
                 }
             })

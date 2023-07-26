@@ -13,7 +13,7 @@ let html = "";
 //     </div>`;
 // });
 quizzes.forEach((element, index) => {
-    html += `<a href="/quiz?quizCode=${element.quizcode}"><div class="card" style="grid-row-start:${index + 1}">${element.quizname}</div></a>`;
+    html += `<a href="/quiz?quizCode=${element.quizCode}"><div class="card" style="grid-row-start:${index + 1}">${element.quizName}</div></a>`;
 });
 
 // document.addEventListener("submit", {

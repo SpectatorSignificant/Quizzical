@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
-const {runQuery} = require("./database.js");
-
+const {runQuery} = require(__dirname + "/database.js");
+const { createUser, createQuiz, updateUser, updateQuiz, findQuiz, findUser, displayQuizzes} = require(__dirname + "/mongoose.js");
 // app.use(express.json())
 // app.use(express.static("public"));
 
@@ -23,9 +23,21 @@ const {runQuery} = require("./database.js");
 async function encryptAndStore(username, password, name){
   
   try {
-    var hashedPassword = await bcrypt.hash(password, 10)
-    await runQuery(`INSERT INTO users VALUES("${username}", "${name}", "${hashedPassword}");`)
-    return 'Success';
+    var hashedPassword = await bcrypt.hash(password, 10);
+    if ((await findUser(username)).length === 0){
+      await createUser({
+        username: username,
+        password: hashedPassword,
+        name: name,
+        scores: [],
+        quizzes: []
+      });
+  
+      return 'Success';
+    }
+    else {;
+      return "Error"
+    }
   } 
   catch {
     return 'Error';
@@ -33,19 +45,21 @@ async function encryptAndStore(username, password, name){
 }
 
 async function decryptAndCompare(username, password){
-  var user = await runQuery(`SELECT * FROM users WHERE username = '${username}'`)
+  var user = await findUser(username);
   // const user = users.find(user => user.name == username)
-  if (user == null) {
+  if (user.length === 0) {
     return 'Error';
   }
-  try {
-    if(await bcrypt.compare(password, user[0].password)) {
-      return 'Success';
-    } else {
+  else{
+    try {
+      if (await bcrypt.compare(password, user[0].password)) {
+        return 'Success';
+      } else {
+        return 'Error';
+      }
+    } catch {
       return 'Error';
     }
-  } catch {
-    return 'Error';
   }
 }
 

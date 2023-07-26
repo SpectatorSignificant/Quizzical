@@ -3,9 +3,13 @@ const ejs = require("ejs");
 const https = require("https");
 const bodyParser = require("body-parser");
 const app = express();
+
+const { createUser, createQuiz, updateUser, updateQuiz, findQuiz, findUser, displayQuizzes, searchUsers, searchQuizzes} = require(__dirname + "/mongoose.js");
 const {runQuery} = require(__dirname + "/database.js");
 const {encryptAndStore, decryptAndCompare} = require(__dirname + "/auth.js");
+
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json());
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 
@@ -14,19 +18,29 @@ let username = null;
 let numberOfQuestions = '0';
 
 async function initSearch(){
-    quizzesInfo = await runQuery(`SELECT quizcode, quizname FROM quizzes`);
-    usersInfo = await runQuery(`SELECT username, name FROM users`);
+    quizzesInfo = await searchQuizzes();
+    usersInfo = await searchUsers();
+    // quizzesInfo = await runQuery(`SELECT quizcode, quizname FROM quizzes`);
+    // usersInfo = await runQuery(`SELECT username, name FROM users`);
     // console.log("initSearch", quizzesInfo);
 }
 initSearch();
 
 function checkAnswers(userAnswers, quiz){
+    console.log("userAnswers:", userAnswers);
     var score = 0;
-    for (var index = 0; index < quiz.length; index++){
-            if (quiz[index].correct_answer == userAnswers[index]) {
-                score++;
-            }
-    }
+    // for (var index = 0; index < quiz.length; index++){
+    //         if (quiz[index].correctAnswer == userAnswers[index]) {
+    //             score++;
+    //         }
+    // }
+    Object.keys(userAnswers).forEach((element) => {
+        console.log(quiz[element], userAnswers[element]);
+        if (quiz[element][5] == userAnswers[element]){
+            score++;
+        }
+    })
+    console.log(score);
     return score;
 }
 
@@ -41,27 +55,29 @@ function generateCode(length) {
 }
 
 
-async function createQuiz(newQuiz){
-    while (true){
-        try{
-            quizCode = generateCode(8);
-            console.log("length: ", quizCode);
-            await runQuery(`INSERT INTO quizzes VALUES('${quizCode}', '${quizName}', '${username}', '${Object.keys(newQuiz).length}')`);
-            await runQuery(`CREATE TABLE ${quizCode} (question varchar(255), A varchar(255), B varchar(255), C varchar(255), D varchar(255), correct_answer varchar(255))`);
-            break;
-        }
-        catch{
+// async function createQuiz(newQuiz){
+//     while (true){
+//         try{
+//             quizCode = generateCode(8);
+//             console.log("length: ", quizCode);
+//             // await 
+//             await runQuery(`INSERT INTO quizzes VALUES('${quizCode}', '${quizName}', '${username}', '${Object.keys(newQuiz).length}')`);
+//             await runQuery(`CREATE TABLE ${quizCode} (question varchar(255), A varchar(255), B varchar(255), C varchar(255), D varchar(255), correct_answer varchar(255))`);
+//             break;
+//         }
+//         catch{
 
-        }
-    }
-    for (var i = 1; i < Object.keys(newQuiz).length + 1; i++){
-        console.log(newQuiz[i]);
-        await runQuery(`INSERT INTO ${quizCode} VALUES('${newQuiz[i][0]}', '${newQuiz[i][1]}', '${newQuiz[i][2]}', '${newQuiz[i][3]}', '${newQuiz[i][4]}', '${newQuiz[i][5]}')`);
-    }
-}
+//         }
+//     }
+//     for (var i = 1; i < Object.keys(newQuiz).length + 1; i++){
+//         console.log(newQuiz[i]);
+//         await runQuery(`INSERT INTO ${quizCode} VALUES('${newQuiz[i][0]}', '${newQuiz[i][1]}', '${newQuiz[i][2]}', '${newQuiz[i][3]}', '${newQuiz[i][4]}', '${newQuiz[i][5]}')`);
+//     }
+// }
+
 
 app.get("/", (req, res) => {
-
+    
     res.redirect("/auth");
 })
 
@@ -70,7 +86,7 @@ app.get("/auth", (req, res) => {
     if (req.query.state == 'logout'){
         username = null;
     }
-    if (username == null){
+    if (username === null){
         if (req.query.state == 'signup'){
             res.render("auth_signup.ejs");
         } 
@@ -88,33 +104,38 @@ app.get("/search", (req, res) => {
 })
 
 app.get("/user", async (req, res) => {
-    if (username == null){
+    if (username === null){
         res.redirect("/");
     }
     else{
         try{
             displayUsername = req.query.username;
-            quizzes = await runQuery(`SELECT * FROM quizzes WHERE author = '${displayUsername}'`);
+            // console.log((await findUser(displayUsername))[0].quizzes);
+            quizzes = (await findUser(displayUsername))[0].quizzes;
             console.log(req.body);
-            displayUsersName = (await runQuery(`SELECT name FROM users WHERE username = '${displayUsername}'`))[0].name;
+            displayUsersName = (await findUser(displayUsername))[0].name;
             res.render("profile.ejs", {quizzes, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName});
         }
-        catch{
+        catch (e){
+            console.log("Error:", e.message);
             res.redirect(`/`);
         }
     }
 })
 
 app.get("/quiz", async (req, res) => {
-    if (username == null){
+    if (username === null){
         res.redirect("/");
     }
     else{
         try{
             quizCode = req.query.quizCode;
             console.log(req.query);
-            quizInfo = await runQuery(`SELECT * FROM quizzes WHERE quizcode = '${quizCode}'`);
-            quiz = await runQuery(`SELECT * FROM ${quizCode}`);
+            quizInfo = (await findQuiz(quizCode));
+            // console.log(quizInfo);
+            quiz = quizInfo[0].entries;
+            console.log("quiz:", quiz);
+            // quiz = await runQuery(`SELECT * FROM ${quizCode}`);
             
             res.render("quiz.ejs", {quizInfo, quiz, usersInfo, quizzesInfo, username, usersName});
         }
@@ -126,21 +147,24 @@ app.get("/quiz", async (req, res) => {
 })
 
 app.get("/scores", async (req, res) => {
-    if (username == null){
+    if (username === null){
         res.redirect("/");
     }
     else{
         console.log(username);
-        pastScores = await runQuery(`SELECT * FROM ${username}_quizzes`);
+        pastScores = (await findUser(username))[0].scores;
+        // for (var i = 0; )
+        // pastScores = await runQuery(`SELECT * FROM ${username}_quizzes`);
         console.log(pastScores);
-        quizInfo = await runQuery(`SELECT * FROM quizzes`);
+        quizInfo = (await displayQuizzes());
+        // quizInfo = await runQuery(`SELECT * FROM quizzes`);
     
         res.render("scores.ejs", {quizInfo, pastScores,usersInfo, quizzesInfo, username, usersName});
     }
 })
 
 app.get("/create", (req, res) => {
-    if (username == null){
+    if (username === null){
         res.redirect("/");
     }
     else{
@@ -162,7 +186,7 @@ app.post("/auth", async (req, res) => {
     else{
         if (await decryptAndCompare(req.body.username, req.body.password) == 'Success'){
             username = req.body.username;
-            usersName = (await runQuery(`SELECT name FROM users WHERE username = '${username}'`))[0].name;
+            usersName = (await findUser(username))[0].name;
             res.redirect(`/user?username=${req.body.username}`);
         }
         else{
@@ -178,7 +202,7 @@ app.post("/signup", async (req, res) => {
         if(await encryptAndStore(req.body.username, req.body.password, req.body.name) == 'Success'){
             username = req.body.username;
             usersName = req.body.name;
-            await runQuery(`CREATE TABLE ${username}_quizzes (quizcode varchar(255) PRIMARY KEY, score varchar(255));`);
+            // await runQuery(`CREATE TABLE ${username}_quizzes (quizcode varchar(255) PRIMARY KEY, score varchar(255));`);
             res.redirect(`/user?username=${username}`);
         }
         else{
@@ -198,15 +222,34 @@ app.post("/user", (req, res) => {
 
 app.post("/quiz", async (req, res) => {
     userAnswers = (req.body);
+    console.log("quiz:", quiz);
     score = checkAnswers(userAnswers, quiz);
 
     try{
-        await runQuery(`INSERT INTO ${username}_quizzes VALUES('${quizCode}', '${score}')`);
-    } catch{
-        await runQuery(`DELETE FROM ${username}_quizzes WHERE quizcode = '${quizCode}'`);
-        await runQuery(`INSERT INTO ${username}_quizzes VALUES('${quizCode}', '${score}')`);
+        scores = (await findUser(username))[0].scores;
+
+        for (var i = 0; i < scores.length; i++){
+            if (scores[i].quizCode == quizCode){
+                scores.splice(i, 1);
+            }
+        }
+
+        scores.push({
+            quizCode: quizCode,
+            score: score,
+            maxScore: quiz.length
+        });
+        console.log("scores:", scores);
+        await updateUser(username, { $set: { scores: scores}});
+
+        // await runQuery(`INSERT INTO ${username}_quizzes VALUES('${quizCode}', '${score}')`);
+    } catch (e){
+        console.log("Error saving score:", e.message);
+        // await runQuery(`DELETE FROM ${username}_quizzes WHERE quizcode = '${quizCode}'`);
+        // await runQuery(`INSERT INTO ${username}_quizzes VALUES('${quizCode}', '${score}')`);
     }
-    
+    console.log("score:", score);
+    console.log("quizInfo:", quizInfo);
     res.render("submitted.ejs", {quiz, quizInfo, userAnswers, score, usersInfo, quizzesInfo, username, usersName});//, correctAnswers, score});
 })
 
@@ -218,11 +261,25 @@ app.post("/create", (req, res) => {
     res.render("create2.ejs", {quizName, numberOfQuestions, usersInfo, quizzesInfo, username, usersName});
 })
 
-app.post("/created", (req, res) => {
+app.post("/created", async (req, res) => {
     console.log("/created");
     console.log(req.body);
     newQuiz = req.body;
-    createQuiz(newQuiz);
+    while (true){
+        quizCode = generateCode(8);
+        
+        if ((await findQuiz(quizCode)).length == 0) {
+            await createQuiz({
+                quizCode: quizCode,
+                quizName: quizName,
+                author: username,
+                entries: newQuiz
+            })
+            await updateUser(username, {$push: {quizzes: {quizCode: quizCode, quizName: quizName}}});
+            // console.log("created mongo quiz");
+            break
+        }
+    }
     setTimeout(initSearch, 300);
     // initSearch();
     console.log("/created", quizzesInfo);
@@ -234,7 +291,7 @@ app.post("/created", (req, res) => {
 })
 
 // let PORT = process.env.PORT;
-// if (PORT == null || PORT == "") {
+// if (PORT === null || PORT == "") {
 //   PORT = 3000;
 // }
 

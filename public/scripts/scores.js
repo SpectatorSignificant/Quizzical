@@ -20,15 +20,17 @@ function findQuiz(quizCode, quizInfo){
 
 let html = "";
 // html += `<div class='options' >`;
+
 pastScores.forEach((element, index) => {
     // console.log(element.quizcode);
     // console.log(findQuiz(element.quizcode, quizInfo));
     // quizName = findQuiz(element.quizcode, quizInfo).quizname;
     // maxScore = findQuiz(element.quizcode, quizInfo).max_score;
+    // maxScore = element.maxScore;
     quizInfo.forEach((e) => {
-        if (e.quizcode == element.quizcode){
-            quizName = e.quizname;
-            maxScore = e.max_score;
+        if (e.quizCode == element.quizCode){
+            quizName = e.quizName;
+            maxScore = Object.keys(e.entries).length;
         }
     });
     html += `<div class='quiz'>`;
@@ -36,5 +38,22 @@ pastScores.forEach((element, index) => {
     html += `<div class='score'>${element.score} / ${maxScore} points</div>`
     html += `</div>`;
 });
+
+// pastScores.forEach((element, index) => {
+//     // console.log(element.quizcode);
+//     // console.log(findQuiz(element.quizcode, quizInfo));
+//     // quizName = findQuiz(element.quizcode, quizInfo).quizname;
+//     // maxScore = findQuiz(element.quizcode, quizInfo).max_score;
+//     quizInfo.forEach((e) => {
+//         if (e.quizcode == element.quizcode){
+//             quizName = e.quizname;
+//             maxScore = e.max_score;
+//         }
+//     });
+//     html += `<div class='quiz'>`;
+//     html += `<h2 class='quizname'>${quizName}</h2>`;
+//     html += `<div class='score'>${element.score} / ${maxScore} points</div>`
+//     html += `</div>`;
+// });
 
 displayBox.innerHTML = html;

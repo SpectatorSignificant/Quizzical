@@ -12,11 +12,19 @@ userAnswers = JSON.parse(userAnswers);
 // correctAnswers = JSON.parse(correctAnswers);
 console.log(userAnswers);
 
+// let quizObject = [];
+// quiz.forEach((element, index) => {
+//     quizObject.push({
+//         question: element.question,
+//         options: [element.A, element.B, element.C, element.D]
+//     });
+// })
+
 let quizObject = [];
-quiz.forEach((element, index) => {
+Object.keys(quiz).forEach((element, index) => {
     quizObject.push({
-        question: element.question,
-        options: [element.A, element.B, element.C, element.D]
+        question: quiz[element][0],
+        options: [quiz[element][1], quiz[element][2], quiz[element][3], quiz[element][4]]
     });
 })
 
@@ -29,7 +37,7 @@ quizObject.forEach((element, index) => {
     html += `<h2>Q. ${element.question}</h2>`;
     html += `<div style='display:flex; flex-direction: column'>`;
     for (var i = 0; i < 4; i++){
-        if (quiz[index].correct_answer == i){
+        if (quiz[index][5] == i){
             html += `<div class='option correct'>${element.options[i]}</div>`;
         } else if (userAnswers[index] == i){
             html += `<div class='option wrong'>${element.options[i]}</div>`
@@ -44,6 +52,6 @@ quizObject.forEach((element, index) => {
 });
 html += `</div>`;
 
-scoreBox.innerHTML = `Score: ${score} / ${quiz.length} points`;
+scoreBox.innerHTML = `Score: ${score} / ${Object.keys(quizInfo.entries).length} points`;
 
 displayBox.innerHTML = html;

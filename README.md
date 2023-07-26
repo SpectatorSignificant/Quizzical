@@ -9,19 +9,10 @@
   
     
 
-### Before you run this project, please add a `.env` file to the project directory containing:
+### Make sure MongoDB is set up on your device before you run this project:
+
+By default it opens on 127.0.0.1:27017, but you can change this by adding a .env in this format
+
 ```
-MYSQL_HOST=
-MYSQL_USER=
-MYSQL_PASSWORD=
-MYSQL_DATABASE=
+MongoDB_PORT="<IP Address: PORT>"
 ```
-The `env.txt` file contains the template, simply fill in the values and rename the file to `.env`. That should work.  
-  
-
-### If you are running this project for the first time,  
-
-you will have to initialize some tables in the SQL database you have mentioned in the `.env` file  
-
-To do so, simply run the command `node setup.js` when you run the project the first time.
-Or, you can use the MySQL Command Line to manually run the two commands given in the `setup.txt` file. Then you can run the project as usual with the command `node app.js`.
