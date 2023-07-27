@@ -48,7 +48,15 @@
                     <input type="file" name="pfp" class="pfp" id="profile-input" accept="image/*">
                 </form>
             <% } %>
-        <a href="" class="friends"><div><%= displayUsersName %>'s friends</div></a>
+        <a href="/friends?username=<%= displayUsername %>" class="friends">
+            <div>
+                <%if (username == displayUsername){%>
+                    Your friends
+                <% } else {%>
+                    <%= displayUsersName %>'s friends
+                <% } %>
+            </div>
+        </a>
         <h2>Quizzes by <%= displayUsersName %>:</h2>
         <!-- <form action="/user" method="post"> -->
             <!-- <input id="hidden" type="radio" name="delete" id="1" hidden> -->

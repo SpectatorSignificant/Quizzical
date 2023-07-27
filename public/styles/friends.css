@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+
+*{
+    font-family: "Inter", "sans-serif";
+}
+
+body{
+    background-color: rgb(236, 236, 236);
+}
+
+.top-bar {
+    background-color: black;
+    color: #fff;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#logo {
+    width: 150px;
+    height: auto;
+    margin-right: 10px;
+}
+
+.search-bar {
+    background-color: black;
+    display: flex;
+    position: absolute;
+    left: 35%;
+    border: none;
+    border-radius: 4px;
+    height: 40px;
+    padding: 0;
+    font-size: 14px;
+    margin-left: auto;
+}
+
+.search-box{
+    position: relative;
+    background-color: white;
+    width: 300px;
+    height: 25px;
+}
+#search-icon{
+    position: relative;
+    margin: 3px 0 3px 0;
+    width: 30px;
+    height: 30px;
+    
+}
+
+.sidebar {
+    background-color: #b6aeb9;
+    margin-top: 60px;
+    width: 150px;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    
+}
+
+.content {
+    margin-left: 220px;
+    margin-top: 60px;
+    padding: 20px;
+}
+
+
+.friends div{
+    border: solid 1px black;
+    border-radius: 8px;
+    height: 20px;
+    width: 160px;
+    padding: 3px;
+    text-align: center;
+    text-decoration: underline;
+    
+}
+
+.friends div:hover{
+    background-color: #b6aeb9;
+}
+
+#display-box{
+    /* display: grid; */
+    position: relative;
+    top: 20px;
+    width: auto;
+    height: 300px;
+}
+
+
+img.pfp{
+    display: block;
+}
+
+input.pfp {
+    width: 200px;
+}
+
+button.pfp {
+    border: solid 1px black;
+    margin: 15px 0 15px 0;
+}
+
+button.pfp:hover{
+    background-color:#b6aeb9;
+}
+
+.card{
+    grid-row-start: auto;
+    height: 60px;
+    width: 500px;
+    overflow-x: hidden;
+    border: solid 2px black;
+    border-radius: 5px;
+    padding: 5px;
+    /* border-color: black;
+    border-style: solid;
+    border-width: 2px; */
+    margin:5px;
+}
+
+.card:hover{
+    background-color: #b6aeb9;
+    cursor: pointer;
+}
+
+.card .name{
+    margin: 5px 0 5px 0;
+}
+
+.card .username{
+    margin: 2px 0 5px 0;
+}
+
+.card a{
+    margin: 20px 0 5px 5px;
+}
+.list{
+    position: relative;
+    top: 50%;
+    right: 20px;
+
+
+}
+
+.list li{
+    display: block;
+    position: relative;
+    max-width: 100px;
+    margin: 0 0 15px 0;
+    padding: 0 2px 0 2px;
+    list-style-type:none;
+    text-align: center;
+    border: solid 1px black;
+    border-radius: 5px;
+
+}
+
+.list li:hover{
+    background-color: #88808b;
+}
+
+a{
+    color: black;
+    text-decoration: none;
+}

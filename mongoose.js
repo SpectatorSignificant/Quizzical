@@ -12,17 +12,27 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "null"
     },
-    scores: [
-        {
+    friends: {
+        type: [String],
+        default: []
+    },
+    scores: {
+        type: [
+            {
+                quizCode: String,
+                score: Number,
+                maxScore: Number
+            }
+        ],
+        default: []
+    },
+    quizzes: {
+        type: [{
             quizCode: String,
-            score: Number,
-            maxScore: Number
-        }
-    ],
-    quizzes: [{
-        quizCode: String,
-        quizName: String
-    }]
+            quizName: String
+        }],
+        default: []
+    }
 });
 
 const User = mongoose.model("User", userSchema);
@@ -31,7 +41,11 @@ const quizSchema = new mongoose.Schema({
     quizCode: String,
     quizName: String,
     author: String,
-    entries: Object
+    entries: Object,
+    private: {
+        type: Boolean,
+        default: false
+    }
 
 })
 

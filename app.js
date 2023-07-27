@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 
-let usersName, imageKey, quizInfo, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
+let usersName, usersFriends, imageKey, quizInfo, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
 let username = null;
 let numberOfQuestions = '0';
 
@@ -99,6 +99,16 @@ app.get("/images", (req, res) => {
     const readStream = getFileStream(key);
 
     readStream.pipe(res);
+})
+
+app.get("/friends", async (req, res) => {
+    if (username === null){
+        res.redirect("/");
+    }
+    displayUsername = req.query.username;
+    usersFriends = (await findUser(displayUsername))[0].friends;
+    console.log(usersFriends);
+    res.render("friends.ejs", {key: imageKey, usersFriends, quizzes, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName});
 })
 
 app.get("/quiz", async (req, res) => {
