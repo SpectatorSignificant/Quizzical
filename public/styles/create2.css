@@ -72,6 +72,16 @@ body{
     padding: 20px;
 }
 
+.block-input{
+    display: block;
+    margin: 40px 0 40px 0;
+}
+
+.block-input input[type="text"]{
+    height: 20px;
+    width: 400px;
+}
+
 .quiz-name input{
     margin-left: 10px;
     width: 400px;

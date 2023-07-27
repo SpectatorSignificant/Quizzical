@@ -22,6 +22,7 @@ let usersInfoObject = {
 };
 
 let quizzesInfoArray = [];
+let quizzesTagsArray = [];
 
 usersInfo.forEach((element, index) => {
     // console.log(element);
@@ -31,7 +32,9 @@ usersInfo.forEach((element, index) => {
 
 quizzesInfo.forEach((element, index) => {
     quizzesInfoArray.push(element.quizName);
+    quizzesTagsArray.push(...element.tags.split(" "));
 })
+console.log(quizzesTagsArray);
 console.log(quizzesInfo);
 // console.log(usersInfoObject);
 // console.log(searchInput);
@@ -84,6 +87,22 @@ searchInput.addEventListener("keyup", (e) => {
         quizSuggestionsArray.forEach((element) => {
             quizzesInfo.forEach((e, i) => {
                 if (e.quizName == element){
+                    console.log(e);
+                    html_search += `<li><a href="/quiz?quizCode=${e.quizCode}"><div>
+                    <h4>Quiz: ${e.quizName}</h4>
+                    </div></a></li>`;
+                }
+            })
+        })
+
+        tagsSuggestionsArray = quizzesTagsArray.filter((tag) => {
+            // console.log(quizName);
+            return tag.toLocaleLowerCase().startsWith(searchInput.value.toLocaleLowerCase());
+        });
+
+        tagsSuggestionsArray.forEach((element) => {
+            quizzesInfo.forEach((e, i) => {
+                if (e.tags.split(" ").includes(element)){
                     console.log(e);
                     html_search += `<li><a href="/quiz?quizCode=${e.quizCode}"><div>
                     <h4>Quiz: ${e.quizName}</h4>

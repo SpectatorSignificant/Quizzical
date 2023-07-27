@@ -42,6 +42,10 @@ const quizSchema = new mongoose.Schema({
     quizName: String,
     author: String,
     entries: Object,
+    tags: {
+        type: String,
+        default: ""
+    },
     private: {
         type: Boolean,
         default: false
@@ -163,8 +167,8 @@ async function searchUsers(){
 
 async function searchQuizzes(){
     try{
-        const quizzes = await Quiz.find({}, {quizCode: 1, quizName: 1});
-        // console.log(quiz);
+        const quizzes = await Quiz.find({}, {quizCode: 1, quizName: 1, tags: 1});
+        console.log(quizzes);
         // await quiz.save();
         return quizzes;
     }

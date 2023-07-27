@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 
-let usersName, usersFriends, imageKey, quizInfo, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
+let usersName, usersFriends, imageKey, quizInfo, isPrivate, isAllowed, newTags, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
 let username = null;
 let numberOfQuestions = '0';
 
@@ -37,7 +37,7 @@ function checkAnswers(userAnswers, quiz){
     return score;
 }
 
-let characters ='abcdefghijklmnopqrstuvwxyz';
+let characters ='abcdefghijklmnopqrstuvwxyz._';
 function generateCode(length) {
     var charactersLength = characters.length;
     var result = '';
@@ -80,7 +80,7 @@ app.get("/user", async (req, res) => {
     else{
         try{
             displayUsername = req.query.username;
-            console.log("displaUsername:", displayUsername, username);
+            console.log("displayUsername:", displayUsername, username);
             console.log("users found:", (await findUser(displayUsername))[0].quizzes)
             quizzes = (await findUser(displayUsername))[0].quizzes;
             displayUsersName = (await findUser(displayUsername))[0].name;
@@ -120,10 +120,32 @@ app.get("/quiz", async (req, res) => {
             quizCode = req.query.quizCode;
             console.log(req.query);
             quizInfo = (await findQuiz(quizCode));
-            quiz = quizInfo[0].entries;
-            console.log("quiz:", quiz);
-            
-            res.render("quiz.ejs", {quizInfo, quiz, usersInfo, quizzesInfo, username, usersName});
+            if (quizInfo[0].author == username){
+                errorMessage = "You cannot take a quiz you authored";
+                res.render("error.ejs", { errorMessage, username, usersName, usersInfo, quizzesInfo });
+            } else {
+                console.log("quizInfo[0]:", quizInfo[0]);
+                if (quizInfo[0].private == true){
+                    if ((await findUser(username))[0].friends.includes(quizInfo[0].author)){
+                        isAllowed = true;
+                    } else{
+                        isAllowed = false;
+                    }
+                } else {
+                    isAllowed = true;
+                }
+
+                if (isAllowed == false){
+                    errorMessage = `This is a private quiz. Try sending @${(await findUser(quizInfo[0].author))[0].username} a friend request`;
+                    res.render("error.ejs", { errorMessage, username, usersName, usersInfo, quizzesInfo });
+                }
+                else {
+                    quiz = quizInfo[0].entries;
+                    console.log("quiz:", quiz);
+                    
+                    res.render("quiz.ejs", {quizInfo, quiz, usersInfo, quizzesInfo, username, usersName});
+                }
+            }
         }
         catch{
             res.redirect(`/`);
@@ -180,6 +202,7 @@ app.post("/auth", async (req, res) => {
 app.post("/signup", async (req, res) => {
     console.log("/signup", req.body);
     if (req.body.password == req.body.repeat){
+        
         if(await encryptAndStore(req.body.username, req.body.password, req.body.name) == 'Success'){
             username = req.body.username;
             usersName = req.body.name;
@@ -259,7 +282,16 @@ app.post("/create", (req, res) => {
 app.post("/created", async (req, res) => {
     console.log("/created");
     console.log(req.body);
+    if (req.body.private == "on"){
+        isPrivate = true;
+    } else {
+        isPrivate = false;
+    }
     newQuiz = req.body;
+    newTags = req.body.tags
+    delete newQuiz.private;
+    delete newQuiz.tags;
+
     while (true){
         quizCode = generateCode(8);
         
@@ -268,7 +300,9 @@ app.post("/created", async (req, res) => {
                 quizCode: quizCode,
                 quizName: quizName,
                 author: username,
-                entries: newQuiz
+                entries: newQuiz,
+                tags: newTags,
+                private: isPrivate
             })
             await updateUser(username, {$push: {quizzes: {quizCode: quizCode, quizName: quizName}}});
             break;

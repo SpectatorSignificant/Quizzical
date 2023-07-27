@@ -23,6 +23,11 @@ const inputForm = document.querySelector("#quiz-form");
 // }
 
 let html = "";
+
+html += `<div class='block-input'>Make quiz private: <input type="checkbox" name="private" id="private"></div>`;
+
+html += `<div class='block-input'>Add tags (each separated by a space): <input type="text" name="tags"></div>`
+
 for (var i = 0; i < numberOfQuestions; i++){
     html += `<div class="card">
     <h2>Question ${i + 1}: <input class="option" type="text" name="${i}"  autofocus></h2>

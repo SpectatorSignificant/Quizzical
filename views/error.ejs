@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quizzical</title>
-    <link rel="stylesheet" href="styles/create.css">
+    <link rel="stylesheet" href="styles/profile.css">
     <link rel="stylesheet" href="styles/search.css">
 </head>
 <body>
@@ -33,34 +33,16 @@
     </div>
     
     <div class="content">
-        <h1>Creating Quiz</h1>
-        <form id="quiz-form" action="/create" method="post">
-            <div id="inputs">
-                <h2 class="quiz-name">Title of the Quiz: <input type="text" name="quizname" required autofocus></h2>
-    
-                <div><h2>Number of questions:</h2> 
-                    <!-- <form id="number-form" action="/buffer" method="post"> -->
-                        <input class="number-of-questions" type="radio" name="numberofquestions" value="10" required>10</input>
-                        <input class="number-of-questions" type="radio" name="numberofquestions" value="15">15</input>
-                        <input class="number-of-questions" type="radio" name="numberofquestions" value="20">20</input>
-                    
-                    <!-- </form> -->
-                </div>
-            </div>
-    
-            <button type="submit">Create Quiz</button>
-        </form>
+        <%= errorMessage %>
+            
     </div>
+    <!-- <div id="variables" hidden></div> -->
     
     <script>
         let usersName = '<%= usersName %>';
-        let username = '<%= username %>';
-        let numberOfQuestions = '<%= numberOfQuestions %>';
-        let quizzes = '<%- JSON.stringify(quizzes) %>';
         let quizzesInfo = '<%- JSON.stringify(quizzesInfo) %>';
         let usersInfo = '<%- JSON.stringify(usersInfo) %>';
     </script>
-    <script src="scripts/create.js"></script>
     <script src="scripts/search.js"></script>
 </body>
 </html>
