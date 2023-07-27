@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const url = `mongodb://${process.env.MongoDB_PORT || '127.0.0.1'}/quizzical`;
+const url = `mongodb://${process.env.MONGODB_PORT || '127.0.0.1'}/quizzical`;
 
 mongoose.connect(url);
 
