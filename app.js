@@ -1,11 +1,11 @@
 const express = require("express");
 const ejs = require("ejs");
-const https = require("https");
+// const https = require("https");
 const bodyParser = require("body-parser");
 const app = express();
 
 const { createUser, createQuiz, updateUser, updateQuiz, findQuiz, findUser, displayQuizzes, searchUsers, searchQuizzes} = require(__dirname + "/mongoose.js");
-// const {runQuery} = require(__dirname + "/database.js");
+const { upload, uploadFile, getFileStream, unlinkFile, deleteFile} = require(__dirname + "/s3.js");
 const {encryptAndStore, decryptAndCompare} = require(__dirname + "/auth.js");
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -13,27 +13,20 @@ app.use(express.json());
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 
-let usersName, quizInfo, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
+let usersName, imageKey, quizInfo, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
 let username = null;
 let numberOfQuestions = '0';
 
 async function initSearch(){
     quizzesInfo = await searchQuizzes();
-    usersInfo = await searchUsers();
-    // quizzesInfo = await runQuery(`SELECT quizcode, quizname FROM quizzes`);
-    // usersInfo = await runQuery(`SELECT username, name FROM users`);
-    // console.log("initSearch", quizzesInfo);
+    usersInfo = await searchUsers()
 }
 initSearch();
 
 function checkAnswers(userAnswers, quiz){
     console.log("userAnswers:", userAnswers);
     var score = 0;
-    // for (var index = 0; index < quiz.length; index++){
-    //         if (quiz[index].correctAnswer == userAnswers[index]) {
-    //             score++;
-    //         }
-    // }
+    
     Object.keys(userAnswers).forEach((element) => {
         console.log(quiz[element], userAnswers[element]);
         if (quiz[element][5] == userAnswers[element]){
@@ -54,35 +47,12 @@ function generateCode(length) {
     return result;
 }
 
-
-// async function createQuiz(newQuiz){
-//     while (true){
-//         try{
-//             quizCode = generateCode(8);
-//             console.log("length: ", quizCode);
-//             // await 
-//             await runQuery(`INSERT INTO quizzes VALUES('${quizCode}', '${quizName}', '${username}', '${Object.keys(newQuiz).length}')`);
-//             await runQuery(`CREATE TABLE ${quizCode} (question varchar(255), A varchar(255), B varchar(255), C varchar(255), D varchar(255), correct_answer varchar(255))`);
-//             break;
-//         }
-//         catch{
-
-//         }
-//     }
-//     for (var i = 1; i < Object.keys(newQuiz).length + 1; i++){
-//         console.log(newQuiz[i]);
-//         await runQuery(`INSERT INTO ${quizCode} VALUES('${newQuiz[i][0]}', '${newQuiz[i][1]}', '${newQuiz[i][2]}', '${newQuiz[i][3]}', '${newQuiz[i][4]}', '${newQuiz[i][5]}')`);
-//     }
-// }
-
-
 app.get("/", (req, res) => {
     
     res.redirect("/auth");
 })
 
 app.get("/auth", (req, res) => {
-    // console.log(req.statu);
     if (req.query.state == 'logout'){
         username = null;
     }
@@ -110,17 +80,25 @@ app.get("/user", async (req, res) => {
     else{
         try{
             displayUsername = req.query.username;
-            // console.log((await findUser(displayUsername))[0].quizzes);
+            console.log("displaUsername:", displayUsername, username);
+            console.log("users found:", (await findUser(displayUsername))[0].quizzes)
             quizzes = (await findUser(displayUsername))[0].quizzes;
-            console.log(req.body);
             displayUsersName = (await findUser(displayUsername))[0].name;
-            res.render("profile.ejs", {quizzes, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName});
+            imageKey = (await findUser(displayUsername))[0].key;
+            res.render("profile.ejs", {key: imageKey, quizzes, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName});
         }
         catch (e){
-            console.log("Error:", e.message);
+            console.log("Error here:", e.message);
             res.redirect(`/`);
         }
     }
+})
+
+app.get("/images", (req, res) => {
+    const key = req.query.key;
+    const readStream = getFileStream(key);
+
+    readStream.pipe(res);
 })
 
 app.get("/quiz", async (req, res) => {
@@ -132,10 +110,8 @@ app.get("/quiz", async (req, res) => {
             quizCode = req.query.quizCode;
             console.log(req.query);
             quizInfo = (await findQuiz(quizCode));
-            // console.log(quizInfo);
             quiz = quizInfo[0].entries;
             console.log("quiz:", quiz);
-            // quiz = await runQuery(`SELECT * FROM ${quizCode}`);
             
             res.render("quiz.ejs", {quizInfo, quiz, usersInfo, quizzesInfo, username, usersName});
         }
@@ -153,11 +129,8 @@ app.get("/scores", async (req, res) => {
     else{
         console.log(username);
         pastScores = (await findUser(username))[0].scores;
-        // for (var i = 0; )
-        // pastScores = await runQuery(`SELECT * FROM ${username}_quizzes`);
         console.log(pastScores);
         quizInfo = (await displayQuizzes());
-        // quizInfo = await runQuery(`SELECT * FROM quizzes`);
     
         res.render("scores.ejs", {quizInfo, pastScores,usersInfo, quizzesInfo, username, usersName});
     }
@@ -168,8 +141,6 @@ app.get("/create", (req, res) => {
         res.redirect("/");
     }
     else{
-
-    // numberOfQuestions = req.query.numberOfQuestions;
     res.render("create.ejs", {quizzes, numberOfQuestions, usersInfo, quizzesInfo, username, usersName});
     }
 })
@@ -202,7 +173,7 @@ app.post("/signup", async (req, res) => {
         if(await encryptAndStore(req.body.username, req.body.password, req.body.name) == 'Success'){
             username = req.body.username;
             usersName = req.body.name;
-            // await runQuery(`CREATE TABLE ${username}_quizzes (quizcode varchar(255) PRIMARY KEY, score varchar(255));`);
+            
             res.redirect(`/user?username=${username}`);
         }
         else{
@@ -217,7 +188,24 @@ app.post("/signup", async (req, res) => {
 })
 
 app.post("/user", (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
+})
+
+app.post("/images", upload.single("pfp"), async (req, res) => {
+    console.log(req.query);
+    if (req.query.delete == 'true') {
+        deleteFile(req.query.key);
+        await updateUser(username, {$set: {key: "null"}});
+    } else {
+        const file = req.file;
+        console.log("file:",file);
+        const result = await uploadFile(file);
+        await unlinkFile(file.path);
+        console.log("result:", result);
+        await updateUser(username, {$set: {key: file.filename}});
+    }
+    
+    res.redirect(`/user?username=${username}`);
 })
 
 app.post("/quiz", async (req, res) => {
@@ -242,11 +230,8 @@ app.post("/quiz", async (req, res) => {
         console.log("scores:", scores);
         await updateUser(username, { $set: { scores: scores}});
 
-        // await runQuery(`INSERT INTO ${username}_quizzes VALUES('${quizCode}', '${score}')`);
     } catch (e){
         console.log("Error saving score:", e.message);
-        // await runQuery(`DELETE FROM ${username}_quizzes WHERE quizcode = '${quizCode}'`);
-        // await runQuery(`INSERT INTO ${username}_quizzes VALUES('${quizCode}', '${score}')`);
     }
     console.log("score:", score);
     console.log("quizInfo:", quizInfo);
@@ -276,24 +261,16 @@ app.post("/created", async (req, res) => {
                 entries: newQuiz
             })
             await updateUser(username, {$push: {quizzes: {quizCode: quizCode, quizName: quizName}}});
-            // console.log("created mongo quiz");
-            break
+            break;
         }
     }
     setTimeout(initSearch, 300);
-    // initSearch();
-    console.log("/created", quizzesInfo);
-    // quizName = req.body.quizname;
-    // numberOfQuestions = req.body.numberofquestions;
+    
+    // console.log("/created", quizzesInfo);
+    
     setTimeout(() => {return}, 300);
     res.redirect("/");
-    // res.render("create2.ejs", {quizName, numberOfQuestions});
 })
-
-// let PORT = process.env.PORT;
-// if (PORT === null || PORT == "") {
-//   PORT = 3000;
-// }
 
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server started on PORT 3000");

@@ -76,7 +76,7 @@ body{
     border: solid 1px black;
     border-radius: 8px;
     height: 20px;
-    width: 120px;
+    width: 160px;
     padding: 3px;
     text-align: center;
     text-decoration: underline;
@@ -93,6 +93,24 @@ body{
     top: 20px;
     width: auto;
     height: 300px;
+}
+
+
+img.pfp{
+    display: block;
+}
+
+input.pfp {
+    width: 200px;
+}
+
+button.pfp {
+    border: solid 1px black;
+    margin: 15px 0 15px 0;
+}
+
+button.pfp:hover{
+    background-color:#b6aeb9;
 }
 
 .card{

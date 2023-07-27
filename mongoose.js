@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
     username: String,
     name: String,
     password: String,
+    key: {
+        type: String,
+        default: "null"
+    },
     scores: [
         {
             quizCode: String,

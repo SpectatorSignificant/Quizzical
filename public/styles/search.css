@@ -135,7 +135,7 @@ position: relative; */
     padding: 20px;
 }
 
-
+/* 
 .friends div{
     border: solid 1px black;
     border-radius: 8px;
@@ -145,7 +145,7 @@ position: relative; */
     text-align: center;
     text-decoration: underline;
     
-}
+} */
 
 .friends div:hover{
     background-color: #b6aeb9;
