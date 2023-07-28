@@ -35,19 +35,31 @@
     <div class="content">
         <h1><%= displayUsersName %></h1>
         <p>@<%= displayUsername %></p>
-            <% if (key !== "null"){%>
-                <form action="/images?delete=true&key=<%= key %>" method="post">
-                    <img src="/images?key=<%= key %>" alt="profile-picture" class="pfp" id="profile-picture" width="100" height="100">
-                    <% if (username == displayUsername){%>
-                        <button type="submit" class="pfp">Delete picture</button>
+        <% if (username != displayUsername){%>
+            <!-- <form action="/user" method="post"> -->
+                <button id="friend-button" type="submit">
+                    <% if (isFriend){%>
+                        Remove friend
+                    <% } else {%>
+                        Add friend
                     <% } %>
-                </form>
-            <% } else if (username == displayUsername){%>
-                <form action="/images?delete=false" method="post" enctype="multipart/form-data">
-                    <button type="submit" class="pfp">Upload profile picture</button>
-                    <input type="file" name="pfp" class="pfp" id="profile-input" accept="image/*">
-                </form>
-            <% } %>
+                </button>
+            <!-- </form> -->
+        <% } %>
+        <% if (key !== "null"){%>
+                <img src="/images?key=<%= key %>" alt="profile-picture" class="pfp" id="profile-picture" width="100" height="100">
+                <% if (username == displayUsername){%>
+                    <form action="/images?delete=true&key=<%= key %>" method="post">
+                        <button type="submit" class="pfp">Delete picture</button>
+                    </form>
+                <% } %>
+        <% } else if (username == displayUsername){%>
+            <form action="/images?delete=false" method="post" enctype="multipart/form-data">
+                <button type="submit" class="pfp">Upload profile picture</button>
+                <input type="file" name="pfp" class="pfp" id="profile-input" accept="image/*">
+            </form>
+        <% } %>
+            
         <a href="/friends?username=<%= displayUsername %>" class="friends">
             <div>
                 <%if (username == displayUsername){%>
@@ -70,6 +82,7 @@
     <script>
         let usersName = '<%= usersName %>';
         let username = '<%= username %>';
+        let displayUsername = '<%= displayUsername %>';
         let quizzes = '<%- JSON.stringify(quizzes) %>';
         let quizzesInfo = '<%- JSON.stringify(quizzesInfo) %>';
         let usersInfo = '<%- JSON.stringify(usersInfo) %>';

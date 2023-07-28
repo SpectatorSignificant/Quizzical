@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 
-let usersName, usersFriends, imageKey, quizInfo, isPrivate, isAllowed, newTags, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
+let usersName, usersFriends, imageKey, quizInfo, isPrivate, isFriend, isAllowed, friendRequests, newTags, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
 let username = null;
 let numberOfQuestions = '0';
 
@@ -85,7 +85,9 @@ app.get("/user", async (req, res) => {
             quizzes = (await findUser(displayUsername))[0].quizzes;
             displayUsersName = (await findUser(displayUsername))[0].name;
             imageKey = (await findUser(displayUsername))[0].key;
-            res.render("profile.ejs", {key: imageKey, quizzes, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName});
+            isFriend = (await findUser(displayUsername))[0].friends.includes(username);
+
+            res.render("profile.ejs", {key: imageKey, quizzes, usersInfo, quizzesInfo, isFriend, username, usersName, displayUsername, displayUsersName});
         }
         catch (e){
             console.log("Error here:", e.message);
@@ -107,8 +109,14 @@ app.get("/friends", async (req, res) => {
     }
     displayUsername = req.query.username;
     usersFriends = (await findUser(displayUsername))[0].friends;
-    console.log(usersFriends);
-    res.render("friends.ejs", {key: imageKey, usersFriends, quizzes, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName});
+    if (displayUsername == username){
+        friendRequests = (await findUser(username))[0].friendRequests;
+    } else {
+        friendRequests = [];
+    }
+    console.log("userFriends:",usersFriends);
+    console.log("friendRequests:", friendRequests);
+    res.render("friends.ejs", {key: imageKey, usersFriends, friendRequests, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName});
 })
 
 app.get("/quiz", async (req, res) => {
@@ -173,7 +181,7 @@ app.get("/create", (req, res) => {
         res.redirect("/");
     }
     else{
-    res.render("create.ejs", {quizzes, numberOfQuestions, usersInfo, quizzesInfo, username, usersName});
+    res.render("create.ejs", { numberOfQuestions, usersInfo, quizzesInfo, username, usersName});
     }
 })
 
@@ -220,8 +228,41 @@ app.post("/signup", async (req, res) => {
     }
 })
 
-app.post("/user", (req, res) => {
-    // console.log(req.body);
+app.post("/user", async (req, res) => {
+    console.log(req.body);
+    if (req.body.friendButtonClicked == true){
+        if (!(await findUser(displayUsername))[0].friends.includes(username) && !(await findUser(displayUsername))[0].friendRequests.includes(username)){
+            console.log(("displayUsername, username:", displayUsername, usernameFfrien));
+            console.log("is friend:", (await findUser(displayUsername))[0]);
+            await updateUser(displayUsername, {$push: {friendRequests: username}});
+        } else if ((await findUser(displayUsername))[0].friends.includes(username)){
+            console.log(("displayUsername, username:", displayUsername, username));
+            console.log("is not friend:", (await findUser(displayUsername))[0].friends);
+            await updateUser(displayUsername, {$pull: {friends: username}});
+            await updateUser(username, {$pull: {friends: displayUsername}});
+            await updateUser(displayUsername, {$pull: {friendRequests: username}});
+        }
+        
+        console.log("username:", username);
+        res.json({url: `/friends?username=${username}`});
+        
+    }
+})
+
+app.post("/friends", async (req, res) => {
+    console.log(req.body);
+
+    if (req.body.clicked == "Accept"){
+        // console.log("Request accepted");
+        await updateUser(username, {$pull: {friendRequests: req.body.username}});
+        await updateUser(username, {$push: {friends: req.body.username}});
+        await updateUser(req.body.username, {$push: {friends: username}});
+    } else if (req.body.clicked == "Decline"){
+        // console.log("Request declined");
+        await updateUser(username, {$pull: {friendRequests: req.body.username}});
+    }
+
+    res.send({url: `/friends?username=${username}`});
 })
 
 app.post("/images", upload.single("pfp"), async (req, res) => {

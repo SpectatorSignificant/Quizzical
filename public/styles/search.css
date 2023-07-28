@@ -157,3 +157,7 @@ position: relative; */
     width: auto;
     height: 300px;
 }
+
+button {
+    cursor: pointer;
+}

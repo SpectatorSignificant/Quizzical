@@ -28,12 +28,10 @@ async function encryptAndStore(username, password, name){
       await createUser({
         username: username,
         password: hashedPassword,
-        name: name,
-        scores: [],
-        quizzes: []
+        name: name
       });
   
-      return 'Success';
+      return "Success";
     }
     else {;
       return "Error"

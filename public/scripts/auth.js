@@ -1,11 +1,11 @@
-const usernameInput = document.querySelector("input[name='username']");
+const usernameInput = document.querySelector("#username");
 
 let characters = 'abcdefghijklmnopqrstuvwxyz0123456789._';
 
-document.addEventListener("input", (e) => {
+usernameInput.addEventListener("input", (e) => {
     e.target.value.split("").forEach((char) => {
         if (!characters.includes(char)){
-            alert("Username can contain only lowercase letter, dots (.), and underscores (_)");
+            alert("Username can contain only lowercase letters, numbers, dots (.), and underscores (_)");
             location.reload();
         } 
     })

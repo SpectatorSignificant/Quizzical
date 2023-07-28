@@ -127,22 +127,36 @@ button.pfp:hover{
     margin:5px;
 }
 
-.card:hover{
+.card.friend:hover{
     background-color: #b6aeb9;
     cursor: pointer;
 }
 
-.card .name{
+.card.friend .name{
     margin: 5px 0 5px 0;
 }
 
-.card .username{
+.card.friend .username{
     margin: 2px 0 5px 0;
 }
 
-.card a{
-    margin: 20px 0 5px 5px;
+.card.request{
+    height: 90px;
 }
+
+.card.request .username{
+    margin: 6px 0 6px 0;
+}
+
+.accept{
+    background-color: rgb(81, 235, 81);
+    margin: 5px;
+}
+
+.decline{
+    background-color: rgb(236, 76, 76);
+}
+
 .list{
     position: relative;
     top: 50%;

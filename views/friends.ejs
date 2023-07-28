@@ -34,14 +34,25 @@
     
     <div class="content">
         <h2>
-            <%if (username == displayUsername){%>
+            <% if (username == displayUsername ){ %>
+                Friend Requests 
+            <% } %>
+        </h2>
+        <div id="friend-requests-box">
+            <% if (JSON.stringify(friendRequests) == "[]") { %>
+                No pending friend requests
+            <% } %>
+        </div>
+        <h2>
+            <% if (username == displayUsername){ %>
                 Your friends
-            <% } else {%>
+            <% } else { %>
                 <%= displayUsersName %>'s friends
             <% } %>
         </h2>
+        
         <div id="friends-box">
-            <% if (usersFriends !== []) {%>
+            <% if (JSON.stringify(usersFriends) == "[]") { %>
                 No friends yet
             <% }%>
                
@@ -52,6 +63,7 @@
     <script>
         let usersName = '<%= usersName %>';
         let username = '<%= username %>';
+        let friendRequests = '<%- JSON.stringify(friendRequests) %>';
         let usersFriends = '<%- JSON.stringify(usersFriends) %>';
         let quizzes = '<%- JSON.stringify(quizzes) %>';
         let quizzesInfo = '<%- JSON.stringify(quizzesInfo) %>';

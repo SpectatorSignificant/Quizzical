@@ -12,7 +12,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "null"
     },
+    tags: {
+        type: String,
+        default: ""
+    },
     friends: {
+        type: [String],
+        default: []
+    },
+    friendRequests: {
         type: [String],
         default: []
     },
