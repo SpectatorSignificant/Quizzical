@@ -1,18 +1,28 @@
-span.tags {
-    display:inline-block;
-    margin: 15px 0 15px 0;
-}
 
-input.tags {
-    width: 300px;
-}
-
-button.tags {
-    display: inline;
-    border: solid 1px black;
-    margin: 15px 0 15px 0;
-}
-
-button.tags:hover{
+#notifications{
     background-color:#b6aeb9;
+    z-index: 200;
+    border: solid 2px black;
+    border-radius: 5px;
+    width: 210px;
+    height: 40px;
+    padding: 4px;
+    text-align: center;
+    position: absolute;
+    right: 0;
+    top: 500px;
+}
+
+#notifications i{
+    color: rgb(243, 57, 57)
+}
+
+#notifications:hover{
+    cursor: pointer;
+    background-color: #88808b;
+}
+
+#notifications button:hover{
+    background-color: #88808b;
+    border: solid 1px black
 }

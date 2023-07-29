@@ -129,8 +129,9 @@ app.get("/friends", async (req, res) => {
         res.redirect("/");
     }
     displayUsername = req.query.username;
-    if (displayUsername === null){
+    if (!displayUsername){
         displayUsername = username;
+        res.redirect(`/friends?username=${username}`);
     } else {
         usersFriends = (await findUser(displayUsername))[0].friends;
         if (displayUsername == username){
@@ -140,8 +141,9 @@ app.get("/friends", async (req, res) => {
         }
         // console.log("userFriends:",usersFriends);
         // console.log("friendRequests:", friendRequests);
-        res.render("friends.ejs", {key: imageKey, usersFriends, friendRequests, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName});  
-    }
+        res.render("friends.ejs", {key: imageKey, usersFriends, friendRequests, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName}); 
+    } 
+    
 })
 
 app.get("/quiz", async (req, res) => {

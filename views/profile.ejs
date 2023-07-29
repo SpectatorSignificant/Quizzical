@@ -29,7 +29,7 @@
         <ul class="list">
 
             <a href="/create"><li>Create Quiz</li></a>
-            <a href=""><li>Friends</li></a>
+            <a href="/friends"><li>Friends</li></a>
             <a href="/scores"><li>Past Quizzes</li></a>
             <a href="/user?username=<%= username %>"><li>Profile</li></a>
             <a href="/auth?state=logout"><li>Logout</li></a>
@@ -70,15 +70,15 @@
         <button class="tags" type="submit">Save</button>
         <% } %>
 
-        <a href="/friends?username=<%= displayUsername %>" class="friends">
-            <div>
+            <div class="friends">
+                
                 <%if (username == displayUsername){%>
-                    Your friends
+                    <a href="/friends?username=<%= displayUsername %>">Your friends</a>
                 <% } else {%>
-                    <%= displayUsersName %>'s friends
+                    <a href="/friends?username=<%= displayUsername %>"><%= displayUsersName %>'s friends</a>
                 <% } %>
             </div>
-        </a>
+        
         <h2>Quizzes by <%= displayUsersName %>:</h2>
         <!-- <form action="/user" method="post"> -->
             <!-- <input id="hidden" type="radio" name="delete" id="1" hidden> -->

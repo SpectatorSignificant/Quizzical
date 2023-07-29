@@ -112,7 +112,7 @@ body{
     height: 300px;
 }
 
-button{
+button.submit{
     position: relative;
     margin: 40px;
     width: 150px;
@@ -124,7 +124,7 @@ button{
     /* background-color: #fff; */
 }
 
-button:hover{
+button.submit:hover{
     background-color: #b6aeb9;
 }
 

@@ -8,6 +8,9 @@
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">
     <link rel="stylesheet" href="styles/scores.css">
     <link rel="stylesheet" href="styles/search.css">
+    <link rel="stylesheet" href="styles/notifications.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
 </head>
 <body>
     <div class="top-bar">
@@ -24,7 +27,7 @@
     <div class="sidebar">
         <ul class="list">
             <a href="/create"><li>Create Quiz</li></a>
-            <a href=""><li>Friends</li></a>
+            <a href="/friends"><li>Friends</li></a>
             <a href="/scores"><li>Past Quizzes</li></a>
             <a href="/user?username=<%= username %>"><li>Profile</li></a>
             <a href="/auth?state=logout"><li>Logout</li></a>
@@ -41,7 +44,7 @@
             </div>
         </div>
     </div>
-    <!-- <div id="variables" hidden></div> -->
+    <div id="notifications" hidden>New friend request <button type="submit"><i class="fa fa-close"></i></button></div>
     <script>
         let usersName = '<%= usersName %>';
         let username = '<%= username %>';
@@ -51,6 +54,7 @@
         let usersInfo = '<%- JSON.stringify(usersInfo) %>';
     </script>
     <script src="scripts/scores.js"></script>
+    <script src="scripts/notifications.js"></script>
     <script src="scripts/search.js"></script>
 </body>
 </html>

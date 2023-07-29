@@ -42,7 +42,7 @@ if (quizzes.length == 0){
   html += "You have not created any quizzes. Create one <a href='/create'>here</a>"
 } else {
   quizzes.forEach((element, index) => {
-      html += `<a href="/quiz?quizCode=${element.quizCode}"><div class="card" style="grid-row-start:${index + 1}">${element.quizName}</div></a>`;
+      html += `<div class="card" style="grid-row-start:${index + 1}"><a href="/quiz?quizCode=${element.quizCode}">${element.quizName}</a></div>`;
   });
 }
 

@@ -12,8 +12,8 @@ socket.on("serverMessage", (message) => {
 socket.on("newRequest", (message) => {
   console.log("New request received:", message);
   notificationBox.hidden = false;
-  // console.log(notificationBox);
-  // console.log(notificationBox.hidden);
+  console.log(notificationBox);
+  console.log(notificationBox.hidden);
 })
 
 function sendMessage(data) {
@@ -22,26 +22,26 @@ function sendMessage(data) {
 
 let clickedOnCloseButton;
 
-async function postJSON(url, data) {
-    try {
-      var response = await fetch(url, {
-        method: "POST", 
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-    //   .then(result => result.json())
-      .then(data => {
-          console.log(data);
-       })
+// async function postJSON(url, data) {
+//     try {
+//       var response = await fetch(url, {
+//         method: "POST", 
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(data),
+//       })
+//     //   .then(result => result.json())
+//       .then(data => {
+//           console.log(data);
+//        })
       
-    //   var result = await response.json();
-    //   console.log("Success:", result);
-    } catch (e) {
-      console.log("Error:", e.message);
-    }
-}
+//     //   var result = await response.json();
+//     //   console.log("Success:", result);
+//     } catch (e) {
+//       console.log("Error:", e.message);
+//     }
+// }
 
 notificationBox.addEventListener("click", (e) => {
     clickedOnCloseButton = closeButton.contains(e.target);
