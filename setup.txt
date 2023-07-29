@@ -1,2 +1,4 @@
-CREATE TABLE users (username varchar(255) PRIMARY KEY, name varchar(255), password varchar(255));
-CREATE TABLE quizzes (quizcode varchar(255) PRIMARY KEY, quizname varchar(255), max_score varchar(255), author varchar(255));
+AWS_BUCKET_NAME=""
+AWS_BUCKET_REGION=""
+AWS_ACCESS_KEY=""
+AWS_SECRET_KEY=""

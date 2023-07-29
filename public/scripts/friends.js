@@ -27,7 +27,7 @@ async function postJSON(data) {
         // console.log("data:", data, typeof(data));
         // console.log("url:", data.url);
         window.location.href = data.url;
-       })
+    })
     
     //   var result = await response.json();
     //   console.log("Success:", result);

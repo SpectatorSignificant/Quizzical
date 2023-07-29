@@ -2,15 +2,18 @@ const logo = document.getElementById("logo");
 const displayBox = document.getElementById("display-box");
 const hiddenInput = document.querySelector("#hidden")
 const friendButton = document.querySelector("#friend-button");
+const tagsInput = document.querySelector("input.tags");
+const tagsButton = document.querySelector("button.tags");
 
 quizzes = JSON.parse(quizzes);
 console.log(quizzes)
 
 displayBox.style["grid-template-rows"] = `repeat(${quizzes.length}, 40px)`;
 
-async function postJSON(data) {
+
+async function postJSON(url, data) {
     try {
-      var response = await fetch("/user", {
+      var response = await fetch(url, {
         method: "POST", 
         headers: {
           "Content-Type": "application/json",
@@ -45,8 +48,12 @@ if (quizzes.length == 0){
 
 if (username != displayUsername){
     friendButton.addEventListener("click", (e) => {
-        postJSON({friendButtonClicked: true});
+        postJSON("/user", {friendButtonClicked: true});
     })
 }
+
+tagsButton.addEventListener("click", (e) => {
+  postJSON("/user/tags", {tags: tagsInput.value});
+})
 
 displayBox.innerHTML += html;

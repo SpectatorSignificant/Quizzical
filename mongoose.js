@@ -92,16 +92,24 @@ let quizObject = {
 }
 
 async function createUser(userObject){
-    // await mongoose.connect(url, {useNewUrlParser: true});
-    const user  = await User.create(userObject);
-    await user.save();
-    // console.log(user);
+    try{
+        // await mongoose.connect(url, {useNewUrlParser: true});
+        const user  = await User.create(userObject);
+        await user.save();
+        // console.log(user);
+    } catch (e){
+        console.log("Error creating user:", e.message);
+    }
 }
 
 async function createQuiz(quizObject){
-    const quiz = await Quiz.create(quizObject);
-    await quiz.save();
-    // console.log(quiz);
+    try{
+        const quiz = await Quiz.create(quizObject);
+        await quiz.save();
+        // console.log(quiz);
+    } catch (e){
+        console.log("Error creating quiz", e.message);
+    }
 }
 
 async function updateUser(username, update){
@@ -176,7 +184,7 @@ async function searchUsers(){
 async function searchQuizzes(){
     try{
         const quizzes = await Quiz.find({}, {quizCode: 1, quizName: 1, tags: 1});
-        console.log(quizzes);
+        // console.log(quizzes);
         // await quiz.save();
         return quizzes;
     }

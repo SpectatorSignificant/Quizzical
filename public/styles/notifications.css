@@ -1,0 +1,18 @@
+span.tags {
+    display:inline-block;
+    margin: 15px 0 15px 0;
+}
+
+input.tags {
+    width: 300px;
+}
+
+button.tags {
+    display: inline;
+    border: solid 1px black;
+    margin: 15px 0 15px 0;
+}
+
+button.tags:hover{
+    background-color:#b6aeb9;
+}
