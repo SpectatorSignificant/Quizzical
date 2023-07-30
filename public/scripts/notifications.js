@@ -22,27 +22,6 @@ function sendMessage(data) {
 
 let clickedOnCloseButton;
 
-// async function postJSON(url, data) {
-//     try {
-//       var response = await fetch(url, {
-//         method: "POST", 
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(data),
-//       })
-//     //   .then(result => result.json())
-//       .then(data => {
-//           console.log(data);
-//        })
-      
-//     //   var result = await response.json();
-//     //   console.log("Success:", result);
-//     } catch (e) {
-//       console.log("Error:", e.message);
-//     }
-// }
-
 notificationBox.addEventListener("click", (e) => {
     clickedOnCloseButton = closeButton.contains(e.target);
 

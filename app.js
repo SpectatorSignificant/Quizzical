@@ -6,6 +6,7 @@ const http = require('http').createServer(app);
 const io = require("socket.io")(http);
 const { createClient } = require('redis');
 const { createAdapter } = require('socket.io-redis-adapter');
+const { CostExplorer } = require("aws-sdk");
 
 // MUST BE ADDED when deploying for redis to handle friend requests and leaderboards with socket.io
 // try{ 
@@ -33,7 +34,7 @@ app.use(express.json());
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 
-let usersName, usersFriends, userTags, imageKey, quizInfo, isPrivate, isFriend, isAllowed, friendRequests, showNotifications, newTags, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
+let usersName, usersFriends, userTags, imageKey, quizInfo, isPrivate, isFriend, isAllowed, friendRequests, friendRecommendations, showNotifications, newTags, quiz, quizCode, quizNames, userAnswers, pastScores, score, newQuiz, usersInfo, quizzesInfo, errorMessage;
 let username = null;
 let numberOfQuestions = '0';
 
@@ -56,6 +57,86 @@ function checkAnswers(userAnswers, quiz){
     // console.log(score);
     return score;
 }
+
+async function getRecommendations(username){
+    // console.log((await findUser(username))[0].friends);
+    const friends  = (await findUser(username))[0].friends;
+    const tags = (await findUser(username))[0].tags.split("");
+    const recommendations = [];
+    for (var i = 0; i < friends.length; i++){
+        const secondFriends = (await findUser(friends[i]))[0].friends;
+        // console.log("Second friend:", secondFriends);
+        recommendations.push(...secondFriends);
+        // console.log(recommendations);
+    }
+    // console.log("34", recommendations);
+    for (var i = 0; i < recommendations.length; i++){
+        if (friends.includes(recommendations[i]) || recommendations[i] == username){
+            recommendations.splice(i, 1);
+            // console.log(recommendations);
+        }
+    }
+    // console.log("returning", recommendations);
+    for (var i = 0; i < usersInfo.length; i++){
+        // console.log("returning2", recommendations);
+        const user = usersInfo[i];
+        for (var i = 0; i < userTags.length; i++){
+            if (user.username != username && !recommendations.includes(user.username) && tags.includes(userTags[i])){
+                recommendations.push(user.username);
+                break;
+            }
+        }
+    }
+
+    return recommendations;
+}
+
+async function updateLeaderboard(username, score, quizCode){
+    const l = (await findQuiz(quizCode))[0].leaderboard;
+    const quizLeaderboard = l.slice();
+    // const length = quizLeaderboard.length;
+    let inserted = false;
+    for (var i = 0; i < quizLeaderboard.length; i++){
+        if (score >= quizLeaderboard[i].score){
+            quizLeaderboard.splice(i, 0, { username, score});
+            inserted = true;
+            for (var j = 0; j < quizLeaderboard.length; j++){
+                // console.log(i, j, quizLeaderboard[j].username, username);
+                if (j != i){
+                    if (quizLeaderboard[j].username == username){
+                        // console.log(quizLeaderboard);
+                        quizLeaderboard.splice(j, 1);
+                        // console.log(quizLeaderboard);
+                    }
+                }
+            }
+            break;
+        }
+    }
+    if (inserted == false){
+        quizLeaderboard.push({ username, score});
+        for (var j = 0; j < quizLeaderboard.length; j++){
+            // console.log(i, j, quizLeaderboard[j].username, username);
+            if (j != quizLeaderboard.length - 1){
+                if (quizLeaderboard[j].username == username){
+                    // console.log(quizLeaderboard);
+                    quizLeaderboard.splice(j, 1);
+                    // console.log(quizLeaderboard);
+                }
+            }
+        }
+    }
+    // while (quizLeaderboard.length > 10){
+    //     quizLeaderboard.pop();
+    // }
+    quizLeaderboard.sort((a, b) => {
+        if (a.score >= b.score) 1
+        else -1
+    })
+    console.log(quizLeaderboard);
+    await updateQuiz({quizCode}, {$set: {leaderboard: quizLeaderboard}});
+}
+// updateLeaderboard('user3', 7, "swllaptt");
 
 let characters ='abcdefghijklmnopqrstuvwxyz._';
 function generateCode(length) {
@@ -130,6 +211,7 @@ app.get("/friends", async (req, res) => {
         res.redirect("/");
     }
     initSearch();
+    friendRecommendations =  (await getRecommendations(username));
     displayUsername = req.query.username;
     if (!displayUsername){
         displayUsername = username;
@@ -143,7 +225,7 @@ app.get("/friends", async (req, res) => {
         }
         // console.log("userFriends:",usersFriends);
         // console.log("friendRequests:", friendRequests);
-        res.render("friends.ejs", {key: imageKey, usersFriends, friendRequests, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName}); 
+        res.render("friends.ejs", {key: imageKey, usersFriends, friendRequests, friendRecommendations, usersInfo, quizzesInfo, username, usersName, displayUsername, displayUsersName}); 
     } 
     
 })
@@ -192,6 +274,16 @@ app.get("/quiz", async (req, res) => {
 
 })
 
+app.get("/leaderboard", async (req, res) => {
+    if (username === null){
+        res.redirect("/");
+    }
+    quizCode = req.query.quizCode;
+    quizName = (await findQuiz(quizCode))[0].quizName;
+    quizLeaderboard = (await findQuiz(quizCode))[0].leaderboard;
+    res.render("leaderboard.ejs", {username, quizCode, quizName, usersInfo, quizzesInfo, quizLeaderboard})
+})
+
 app.get("/scores", async (req, res) => {
     if (username === null){
         res.redirect("/");
@@ -215,6 +307,10 @@ app.get("/create", (req, res) => {
         initSearch();
         res.render("create.ejs", { numberOfQuestions, usersInfo, quizzesInfo, username, usersName});
     }
+})
+
+app.get("*", (req, res) => {
+    res.redirect("/");
 })
 
 app.post("/", (req, res) => {
@@ -372,6 +468,9 @@ app.post("/quiz", async (req, res) => {
         });
         // console.log("scores:", scores);
         await updateUser(username, { $set: { scores: scores}});
+        await updateLeaderboard(username, score, quizCode);
+        io.to(`leaderboard/${quizCode}`).emit("reloadPage", {state: "reload"});
+        console.log("Page reload sent");
 
     } catch (e){
         console.log("Error saving score:", e.message);
@@ -438,6 +537,11 @@ io.on('connection', (socket) => {
         socket.emit('serverMessage', {message: "Hello from server-side"});
         
         console.log("Message emitted from backend");
+    })
+
+    socket.on("leaderboard", (message) => {
+        console.log("Leaderboard is displayed", message.quizCode);
+        socket.join(`leaderboard/${quizCode}`);
     })
 
     socket.on("clientMessage", (message) => {

@@ -5,6 +5,7 @@ usersInfo = JSON.parse(usersInfo);
 quizzesInfo = JSON.parse(quizzesInfo);
 
 friendRequests = JSON.parse(friendRequests);
+friendRecommendations = JSON.parse(friendRecommendations);
 
 console.log("usersInfo:", usersInfo);
 console.log("quizzesInfo:", quizzesInfo);
@@ -13,9 +14,9 @@ console.log("quizzesInfo:", quizzesInfo);
 usersFriends = JSON.parse(usersFriends);
 console.log(usersFriends);
 
-async function postJSON(data) {
+async function postJSON(url, data) {
     try {
-      var response = await fetch("/friends", {
+      var response = await fetch(url, {
         method: "POST", 
         headers: {
           "Content-Type": "application/json",
@@ -73,12 +74,30 @@ if (usersFriends.length > 0){
     friendsBox.innerHTML = html;
 }
 
+html = "";
+const recommendationsBox = document.querySelector("#recommendations-box")
+if (friendRecommendations.length > 0){
+    friendRecommendations.forEach((element) => {
+        usersInfo.forEach((e) => {
+            if (e.username == element){
+                html += `<a href='/user?username=${e.username}'><div class='card friend'>`;
+                html += `<div class='name'>${e.name}</div>`;
+                html += `<div class='username'>@${e.username}</div>`
+                html += `</div></a>`;
+            }
+        })
+        
+    });
+    
+    recommendationsBox.innerHTML = html;
+}
+
 const requestButtons = document.querySelectorAll("button.answer");
 
 if (requestButtons.length > 0){
     requestButtons.forEach((button) => {
         button.addEventListener("click", (e) => {
-            postJSON({username: e.target.name, clicked: e.target.innerHTML});
+            postJSON("/friends", {username: e.target.name, clicked: e.target.innerHTML});
         })
     })
 }

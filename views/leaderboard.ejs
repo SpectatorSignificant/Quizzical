@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quizzical</title>
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">
-    <link rel="stylesheet" href="styles/friends.css">
+    <link rel="stylesheet" href="styles/leaderboard.css">
     <link rel="stylesheet" href="styles/search.css">
     <link rel="stylesheet" href="styles/notifications.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -37,52 +37,25 @@
     </div>
     
     <div class="content">
-        <h2>
-            <% if (username == displayUsername ){ %>
-                Friend Requests 
-            <% } %>
-        </h2>
-        <div id="friend-requests-box">
-            <% if (JSON.stringify(friendRequests) == "[]") { %>
-                No pending friend requests
-            <% } %>
-        </div>
-        <h2>
-            <% if (JSON.stringify(friendRecommendations) != "[]") { %>
-                Recommended friends:
-            <% } else { %>
-                <%= displayUsersName %>'s friends
-            <% } %>
-        </h2>
-        <div id="recommendations-box"></div>
-        <h2>
-            <% if (username == displayUsername){ %>
-                Your friends
-            <% } else { %>
-                <%= displayUsersName %>'s friends
-            <% } %>
-        </h2>
-
-        <div id="friends-box">
-            <% if (JSON.stringify(usersFriends) == "[]") { %>
-                No friends yet
-            <% }%>
+        <h2>Leaderboard</h2>
+        <h3>
+            <%= quizName %>
+        </h3>
+        
+        <div id="leaderboard">
                
         </div>
     </div>
     <div id="notifications" hidden>New friend request <button type="submit"><i class="fa fa-close"></i></button></div>
     <script>
-        let usersName = '<%= usersName %>';
         let username = '<%= username %>';
-        let friendRequests = '<%- JSON.stringify(friendRequests) %>';
-        let friendRecommendations = '<%- JSON.stringify(friendRecommendations) %>';
-        let usersFriends = '<%- JSON.stringify(usersFriends) %>';
-        let quizzes = '<%- JSON.stringify(quizzes) %>';
-        let quizzesInfo = '<%- JSON.stringify(quizzesInfo) %>';
+        let quizCode = '<%= quizCode %>';
+        let quizLeaderboard = '<%- JSON.stringify(quizLeaderboard) %>';
         let usersInfo = '<%- JSON.stringify(usersInfo) %>';
+        let quizzesInfo = '<%- JSON.stringify(quizzesInfo) %>';
     </script>
-    <script src="scripts/friends.js"></script>
     <script src="scripts/notifications.js"></script>
+    <script src="scripts/leaderboard.js"></script>
     <script src="scripts/search.js"></script>
 </body>
 </html>

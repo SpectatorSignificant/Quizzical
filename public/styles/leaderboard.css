@@ -71,29 +71,19 @@ body{
     padding: 20px;
 }
 
-#friend-button {
-    margin: 15px 0 20px 0;
-    border: solid 1px black;
-    border-radius: 4px;
-}
 
-#friend-button:hover {
-    background-color: #b6aeb9;
-    cursor: pointer;
-}
-
-.friends{
+.friends div{
     border: solid 1px black;
-    border-radius: 5px;
+    border-radius: 8px;
     height: 20px;
-    width: 220px;
+    width: 160px;
     padding: 3px;
     text-align: center;
     text-decoration: underline;
     
 }
 
-.friends:hover{
+.friends div:hover{
     background-color: #b6aeb9;
 }
 
@@ -110,6 +100,10 @@ img.pfp{
     display: block;
 }
 
+input.pfp {
+    width: 200px;
+}
+
 button.pfp {
     border: solid 1px black;
     margin: 15px 0 15px 0;
@@ -121,7 +115,7 @@ button.pfp:hover{
 
 .card{
     grid-row-start: auto;
-    height: 28px;
+    height: 60px;
     width: 500px;
     overflow-x: hidden;
     border: solid 2px black;
@@ -133,9 +127,34 @@ button.pfp:hover{
     margin:5px;
 }
 
-.card:hover{
+.card.friend:hover{
     background-color: #b6aeb9;
     cursor: pointer;
+}
+
+.card.friend .name{
+    margin: 5px 0 5px 0;
+}
+
+.card.friend .username{
+    margin: 2px 0 5px 0;
+}
+
+.card.request{
+    height: 90px;
+}
+
+.card.request .username{
+    margin: 6px 0 6px 0;
+}
+
+.accept{
+    background-color: rgb(81, 235, 81);
+    margin: 5px;
+}
+
+.decline{
+    background-color: rgb(236, 76, 76);
 }
 
 .list{
@@ -166,25 +185,4 @@ button.pfp:hover{
 a{
     color: black;
     text-decoration: none;
-    display: block;
-}
-
-
-span.tags {
-    display:inline-block;
-    margin: 15px 0 15px 0;
-}
-
-input.tags {
-    width: 300px;
-}
-
-button.tags {
-    display: inline;
-    border: solid 1px black;
-    margin: 15px 0 15px 0;
-}
-
-button.tags:hover{
-    background-color:#b6aeb9;
 }

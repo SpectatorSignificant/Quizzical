@@ -50,6 +50,15 @@ const quizSchema = new mongoose.Schema({
     quizName: String,
     author: String,
     entries: Object,
+    leaderboard: {
+        type: [
+            {
+                username: String,
+                score: Number
+            }
+        ],
+        default: []
+    },
     tags: {
         type: String,
         default: ""
@@ -171,7 +180,7 @@ async function findUser(username){
 
 async function searchUsers(){
     try{
-        const users = await User.find({}, {username: 1, name: 1});
+        const users = await User.find({}, {username: 1, name: 1, tags: 1});
         // console.log(user);
         // await quiz.save();
         return users;
