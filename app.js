@@ -89,15 +89,16 @@ app.get("/auth", (req, res) => {
     }
 })
 
-app.get("/search", (req, res) => {
-    res.render("search.ejs", {usersInfo, quizzesInfo, username, usersName});
-})
+// app.get("/search", (req, res) => {
+//     res.render("search.ejs", {usersInfo, quizzesInfo, username, usersName});
+// })
 
 app.get("/user", async (req, res) => {
     if (username === null){
         res.redirect("/");
     }
     else{
+        initSearch();
         try{
             displayUsername = req.query.username;
             // console.log("displayUsername:", displayUsername, username);
@@ -128,6 +129,7 @@ app.get("/friends", async (req, res) => {
     if (username === null){
         res.redirect("/");
     }
+    initSearch();
     displayUsername = req.query.username;
     if (!displayUsername){
         displayUsername = username;
@@ -151,6 +153,7 @@ app.get("/quiz", async (req, res) => {
         res.redirect("/");
     }
     else{
+        initSearch();
         try{
             quizCode = req.query.quizCode;
             // console.log(req.query);
@@ -194,6 +197,7 @@ app.get("/scores", async (req, res) => {
         res.redirect("/");
     }
     else{
+        initSearch();
         // console.log(username);
         pastScores = (await findUser(username))[0].scores;
         // console.log(pastScores);
@@ -208,7 +212,8 @@ app.get("/create", (req, res) => {
         res.redirect("/");
     }
     else{
-    res.render("create.ejs", { numberOfQuestions, usersInfo, quizzesInfo, username, usersName});
+        initSearch();
+        res.render("create.ejs", { numberOfQuestions, usersInfo, quizzesInfo, username, usersName});
     }
 })
 
