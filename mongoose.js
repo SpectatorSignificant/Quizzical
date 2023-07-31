@@ -102,10 +102,8 @@ let quizObject = {
 
 async function createUser(userObject){
     try{
-        // await mongoose.connect(url, {useNewUrlParser: true});
         const user  = await User.create(userObject);
         await user.save();
-        // console.log(user);
     } catch (e){
         console.log("Error creating user:", e.message);
     }
@@ -115,7 +113,6 @@ async function createQuiz(quizObject){
     try{
         const quiz = await Quiz.create(quizObject);
         await quiz.save();
-        // console.log(quiz);
     } catch (e){
         console.log("Error creating quiz", e.message);
     }
@@ -126,7 +123,7 @@ async function updateUser(username, update){
         const user = await User.findOneAndUpdate({username: username}, update, {
             new: true
         });
-        // console.log(user._id);
+        
         await user.save();
         return user;
     }
@@ -139,7 +136,7 @@ async function updateQuiz(filter, update){
     const quiz = await Quiz.findOneAndUpdate(filter, update, {
         new: true
     });
-    // console.log(quiz._id);
+    
     await quiz.save();
     return quiz._id;
 }
@@ -147,8 +144,7 @@ async function updateQuiz(filter, update){
 async function findQuiz(quizCode){
     try{
         const quiz = await Quiz.where("quizCode").equals(quizCode);
-        // console.log(quiz);
-        // await quiz.save();
+        
         return quiz;
     }
     catch (e){
@@ -158,8 +154,7 @@ async function findQuiz(quizCode){
 async function displayQuizzes(){
     try{
         const quizzes = await Quiz.find({});
-        // console.log(quizzes);
-        // await quiz.save();
+        
         return quizzes;
     }
     catch (e){
@@ -169,8 +164,7 @@ async function displayQuizzes(){
 async function findUser(username){
     try{
         const user = await User.where("username").equals(username);
-        // console.log(user);
-        // await quiz.save();
+        
         return user;
     }
     catch (e){
@@ -181,8 +175,7 @@ async function findUser(username){
 async function searchUsers(){
     try{
         const users = await User.find({}, {username: 1, name: 1, tags: 1});
-        // console.log(user);
-        // await quiz.save();
+        
         return users;
     }
     catch (e){
@@ -193,18 +186,12 @@ async function searchUsers(){
 async function searchQuizzes(){
     try{
         const quizzes = await Quiz.find({}, {quizCode: 1, quizName: 1, tags: 1});
-        // console.log(quizzes);
-        // await quiz.save();
+        
         return quizzes;
     }
     catch (e){
         console.log("Error:", e.message);
     }
 }
-
-// createQuiz(quizObject);
-// updateQuiz({quizCode: 'bbbbbbbb'}, {$push: {entries: {question: "HEllo", A:"World"}}});
-
-// findQuiz("bbbbbbbb");
 
 module.exports = { createUser, createQuiz, updateUser, updateQuiz, findQuiz, findUser, displayQuizzes, searchUsers, searchQuizzes};
