@@ -96,6 +96,10 @@ body{
     margin: 15px 15px 15px 0;
 }
 
+.quiz:hover{
+    background-color: #b6aeb9;
+}
+
 .quiz .quizname{
     margin: 0;
 }

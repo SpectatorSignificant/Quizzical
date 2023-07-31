@@ -1,7 +1,7 @@
 const logo = document.getElementById("logo");
 const displayBox = document.getElementById("display-box");
 
-let quizName, maxScore;
+let quizCode, quizName, maxScore;
 
 quizInfo = JSON.parse(quizInfo);
 console.log(quizInfo);
@@ -29,14 +29,15 @@ pastScores.forEach((element, index) => {
     // maxScore = element.maxScore;
     quizInfo.forEach((e) => {
         if (e.quizCode == element.quizCode){
+            quizCode = e.quizCode;
             quizName = e.quizName;
             maxScore = Object.keys(e.entries).length;
         }
     });
-    html += `<div class='quiz'>`;
+    html += `<div class='quiz'><a href='/quiz?quizCode=${quizCode}'>`;
     html += `<h2 class='quizname'>${quizName}</h2>`;
     html += `<div class='score'>${element.score} / ${maxScore} points</div>`
-    html += `</div>`;
+    html += `</a></div>`;
 });
 
 // pastScores.forEach((element, index) => {
