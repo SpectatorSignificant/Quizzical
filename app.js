@@ -122,7 +122,7 @@ async function updateLeaderboard(username, score, quizCode){
 }
 // updateLeaderboard('user3', 7, "swllaptt");
 
-let characters ='abcdefghijklmnopqrstuvwxyz._';
+let characters ='abcdefghijklmnopqrstuvwxyz';
 function generateCode(length) {
     var charactersLength = characters.length;
     var result = '';
@@ -167,6 +167,7 @@ app.get("/user", async (req, res) => {
         try{
             displayUsername = req.query.username;
             quizzes = (await findUser(displayUsername))[0].quizzes;
+            console.log({quizzes})
             displayUsersName = (await findUser(displayUsername))[0].name;
             imageKey = (await findUser(displayUsername))[0].key;
             isFriend = (await findUser(displayUsername))[0].friends.includes(username);
@@ -489,7 +490,7 @@ io.on('connection', (socket) => {
     });
 });
   
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 http.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);
 });

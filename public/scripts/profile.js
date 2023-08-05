@@ -38,8 +38,10 @@ let html = "";
 //     <button type="submit" >Delete</button>
 //     </div>`;
 // });
-if (quizzes.length == 0){
-  html += "You have not created any quizzes. Create one <a href='/create'>here</a>"
+if (quizzes.length === 0 && username === displayUsername){
+  html += "You have not created any quizzes. Create one <a class='here' href='/create'>here</a>"
+} else if (quizzes.length === 0 && username !== displayUsername) {
+  html += "User has not authored any quizzes"
 } else {
   quizzes.forEach((element, index) => {
       html += `<div class="card" style="grid-row-start:${index + 1}"><a href="/quiz?quizCode=${element.quizCode}">${element.quizName}</a></div>`;
@@ -51,9 +53,13 @@ if (username != displayUsername){
         postJSON("/user", {friendButtonClicked: true});
     })
 }
-
-tagsButton.addEventListener("click", (e) => {
-  postJSON("/user/tags", {tags: tagsInput.value});
-})
+try {
+  tagsButton.addEventListener("click", (e) => {
+    postJSON("/user/tags", {tags: tagsInput.value});
+  })
+} catch (e) {
+  console.log("Error:", e.message);
+  console.log("Spectating user")
+}
 
 displayBox.innerHTML += html;

@@ -138,6 +138,11 @@ button.pfp:hover{
     cursor: pointer;
 }
 
+.here {
+    color:#88808b;
+    text-decoration: underline;
+}
+
 .list{
     position: relative;
     top: 50%;
